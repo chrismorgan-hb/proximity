@@ -77,13 +77,41 @@ angular.module('proximity.controllers', []).
       };
 
       $scope.types = [
-        'grocery_or_supermarket',
-        'gas_station',
-        'restaurant',
-        'atm',
-        'pharmacy',
-        'hardware_store',
-        'park'
+        {
+          tag: 'grocery_or_supermarket',
+          score: -1,
+          name: 'Groceries'
+        },
+        {
+          tag: 'gas_station',
+          score: -1,
+          name: 'Gas Stations'
+        },
+        {
+          tag: 'restaurant',
+          score: -1,
+          name: 'Restaurants'
+        },
+        {
+          tag: 'atm',
+          score: -1,
+          name: 'ATMs'
+        },
+        {
+          tag: 'pharmacy',
+          score: -1,
+          name: 'Pharmacies'
+        },
+        {
+          tag: 'hardware_store',
+          score: -1,
+          name: 'Hardware Stores'
+        },
+        {
+          tag: 'park',
+          score: -1,
+          name: 'Parks'
+        }
       ];
 
       $scope.rankLocation = function(lat, lon) {
@@ -96,24 +124,25 @@ angular.module('proximity.controllers', []).
         var callback = function(results, status) {
           switch(status) {
             case google.maps.places.PlacesServiceStatus.OK:
-              // TODO: Populate the values in the table
-              console.log(type + ": " + results.length);
+              type.score = results.length;
+              console.log(type.tag + ": " + results.length);
               break;
             case google.maps.places.PlacesServiceStatus.ZERO_RESULTS:
-              // TODO: Populate the values in the table
-              console.log(type + ": " + 0);
+              type.score = 0;
+              console.log(type.tag + ": " + 0);
               break;
             default:
-              alert(type + ": " + status);
+              alert(type.tag + ": " + status);
               return;
           }
+          $scope.$apply();
         };
 
         var latLng = new google.maps.LatLng(lat, lon);
         var request = {
           location: latLng,
           radius: 1600, // TODO: make this input
-          types: [type]
+          types: [type.tag]
         };
 
         var placesService = new google.maps.places.PlacesService($scope.gMap);

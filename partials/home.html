@@ -17,12 +17,14 @@
     <marker coords="userLocationMarker.coords"></marker>
   </google-map>
   <ul class="list-group">
-    <li class="list-group-item">Groceries</li>
-    <li class="list-group-item">Gas Stations</li>
-    <li class="list-group-item">Restaurants</li>
-    <li class="list-group-item">ATMs</li>
-    <li class="list-group-item">Pharmacies</li>
-    <li class="list-group-item">Hardware Stores</li>
-    <li class="list-group-item">Parks</li>
+    <li ng-repeat="type in types" 
+      ng-class="{'list-group-item': type.score == -1,
+                 'list-group-item list-group-item-success': type.score >= 10,
+                 'list-group-item list-group-item-warning': 
+                    type.score < 10 && type.score >= 5,
+                 'list-group-item list-group-item-danger': 
+                    type.score < 5 && type.score >= 0}">
+      {{type.name}}
+    </li>
   </ul>
 </div>
