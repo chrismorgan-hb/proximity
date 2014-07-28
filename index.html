@@ -32,7 +32,6 @@
       display: none;
     }
   </style>
-  <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBMZ4Sm-mFQBnHmWdmAcMlbZWZiak4_40g'></script>
   <script>
     // include angular loader, which allows the files to load in any order
     
@@ -58,6 +57,7 @@
 
     // load all of the dependencies asynchronously.
     $script([
+    'https://maps.googleapis.com/maps/api/js?key=AIzaSyBMZ4Sm-mFQBnHmWdmAcMlbZWZiak4_40g&' + 'callback=initialize&libraries=places,visualization',
       'lib/bower_components/angular/angular.js',
       'lib/bower_components/angular-ga/ga.js',
       'lib/bower_components/angular-route/angular-route.js',
@@ -73,6 +73,9 @@
       // when all is done, execute bootstrap angular application
       angular.bootstrap(document, ['proximity']);
     });
+    function initialize() {
+      // Placeholder for async maps API load
+    }
   </script>
   <title>Are Things Close?</title>
 </head>

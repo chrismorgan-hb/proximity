@@ -1,5 +1,28 @@
 <div class="container">
-  <google-map center="map.center" zoom="map.zoom" events="map.events">
+  <h2>Click on the map or provide a location to check</h2>
+  <input 
+    type="text" 
+    ng-model="addressInput" 
+    placeholder="Enter an address" 
+    typeahead="address for address in getLocation($viewValue)"
+    typeahead-loading="loadingLocations"
+    typeahead-on-select="onSelect($item, $model, $label)"
+    class="form-control">
+      <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i> 
+  <google-map 
+    draggable="true" 
+    center="map.center" 
+    zoom="map.zoom" 
+    events="map.events">
     <marker coords="userLocationMarker.coords"></marker>
   </google-map>
+  <ul class="list-group">
+    <li class="list-group-item">Groceries</li>
+    <li class="list-group-item">Gas Stations</li>
+    <li class="list-group-item">Restaurants</li>
+    <li class="list-group-item">ATMs</li>
+    <li class="list-group-item">Pharmacies</li>
+    <li class="list-group-item">Hardware Stores</li>
+    <li class="list-group-item">Parks</li>
+  </ul>
 </div>
