@@ -1,5 +1,17 @@
 <div class="container">
   <h2>Click on the map or provide a location to check</h2>
+  <ul class="pager">
+    <li
+      ng-class="{'disabled': searchRadius <= 1600}" 
+      ng-click="decreaseRadius()">
+      <a>Smaller Radius</a>
+    </li>
+    <li
+      ng-class="{'disabled': searchRadius >= 8000}" 
+      ng-click="increaseRadius()">
+      <a>Larger Radius</a>
+    </li>
+  </ul>
   <input 
     type="text" 
     ng-model="addressInput" 
@@ -15,6 +27,14 @@
     zoom="map.zoom" 
     events="map.events">
     <marker coords="userLocationMarker.coords"></marker>
+    <circle 
+      center="userLocationMarker.coords"
+      radius="searchRadius"
+      stroke="{color: '#33FFFF', weight: 1, opacity: 1.0}"
+      fill="{color: '#33FFFF', opacity: 0.1}"
+      clickable="false"
+      visible="true">
+    </circle>
   </google-map>
   <ul class="list-group">
     <li ng-repeat="type in types" 

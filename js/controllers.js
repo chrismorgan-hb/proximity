@@ -7,6 +7,7 @@ angular.module('proximity.controllers', []).
       $scope.userLocationMarker = {};
       $scope.map = {};
       $scope.gMap = {};
+      $scope.searchRadius = 1600; // meters
 
       $scope.setUserLocationMarker = function(lat, lon, recenter) {
         $scope.userLocationMarker = {
@@ -22,25 +23,41 @@ angular.module('proximity.controllers', []).
 
       $scope.setUserLocationMarker(33.744433, -118.015762, true);
 
+      $scope.increaseRadius = function() {
+        if ($scope.searchRadius < 8000) {
+          $scope.searchRadius += 1600;
+          $scope.rankLocation($scope.userLocationMarker.coords.latitude,
+                              $scope.userLocationMarker.coords.longitude);
+        }
+      };
+
+      $scope.decreaseRadius = function() {
+        if ($scope.searchRadius > 1600) {
+          $scope.searchRadius -= 1600;
+          $scope.rankLocation($scope.userLocationMarker.coords.latitude,
+                              $scope.userLocationMarker.coords.longitude);
+        }
+      };
+
       $scope.map = {
-          center: $scope.userLocationMarker.coords,
-          zoom: 13,
-          events: {
-            tilesloaded: function(map) {
-              $scope.$apply(function() {
-                $scope.gMap = map;
-              });
-            },
-            click: function(mapModel, eventName, originalEventArgs) {
-              ga('send', 'event', 'image', 'click', 'map')
-              var e = originalEventArgs[0];
-              var lat = e.latLng.lat(), lon = e.latLng.lng();
-              $scope.setUserLocationMarker(lat, lon);
-              $scope.addressInput = ""; 
-              $scope.$apply();
-              $scope.rankLocation(lat, lon);
-            }
+        center: $scope.userLocationMarker.coords,
+        zoom: 13,
+        events: {
+          tilesloaded: function(map) {
+            $scope.$apply(function() {
+              $scope.gMap = map;
+            });
+          },
+          click: function(mapModel, eventName, originalEventArgs) {
+            ga('send', 'event', 'image', 'click', 'map')
+            var e = originalEventArgs[0];
+            var lat = e.latLng.lat(), lon = e.latLng.lng();
+            $scope.setUserLocationMarker(lat, lon);
+            $scope.addressInput = ""; 
+            $scope.$apply();
+            $scope.rankLocation(lat, lon);
           }
+        }
       };
 
       $scope.getLocation = function(val) {
@@ -141,7 +158,7 @@ angular.module('proximity.controllers', []).
         var latLng = new google.maps.LatLng(lat, lon);
         var request = {
           location: latLng,
-          radius: 1600, // TODO: make this input
+          radius: $scope.searchRadius,
           types: [type.tag]
         };
 
