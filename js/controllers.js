@@ -25,6 +25,8 @@ angular.module('proximity.controllers', []).
 
       $scope.increaseRadius = function() {
         if ($scope.searchRadius < 8000) {
+          ga('send', 'event', 'button', 'click', 'increaseRadius',
+             $scope.searchRadius); 
           $scope.searchRadius += 1600;
           $scope.rankLocation($scope.userLocationMarker.coords.latitude,
                               $scope.userLocationMarker.coords.longitude);
@@ -33,6 +35,8 @@ angular.module('proximity.controllers', []).
 
       $scope.decreaseRadius = function() {
         if ($scope.searchRadius > 1600) {
+          ga('send', 'event', 'button', 'click', 'decreaseRadius',
+             $scope.searchRadius);
           $scope.searchRadius -= 1600;
           $scope.rankLocation($scope.userLocationMarker.coords.latitude,
                               $scope.userLocationMarker.coords.longitude);
@@ -49,7 +53,7 @@ angular.module('proximity.controllers', []).
             });
           },
           click: function(mapModel, eventName, originalEventArgs) {
-            ga('send', 'event', 'image', 'click', 'map')
+            ga('send', 'event', 'image', 'click', 'map');
             var e = originalEventArgs[0];
             var lat = e.latLng.lat(), lon = e.latLng.lng();
             $scope.setUserLocationMarker(lat, lon);
@@ -77,7 +81,7 @@ angular.module('proximity.controllers', []).
       };
 
       $scope.onSelect = function($item, $model, $label) {
-        ga('send', 'event', 'input', 'select', 'address')
+        ga('send', 'event', 'input', 'select', 'address');
         // TODO: Switch to google.maps.Geocoder()
         // TODO: Avoid the second API call
         return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
