@@ -39,12 +39,13 @@
   <ul class="list-group">
     <li ng-repeat="type in types" 
       ng-class="{'list-group-item': type.score == -1,
-                 'list-group-item list-group-item-success': type.score >= 10,
+                 'list-group-item list-group-item-success': type.score >= 3,
                  'list-group-item list-group-item-warning': 
-                    type.score < 10 && type.score >= 5,
+                    type.score < 3 && type.score >= 2,
                  'list-group-item list-group-item-danger': 
-                    type.score < 5 && type.score >= 0}">
+                    type.score < 2 && type.score >= 0}">
       {{type.name}}
+      <rating ng-model="type.score" max="5" readonly="true"></rating>
     </li>
   </ul>
 </div>

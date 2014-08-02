@@ -7,7 +7,7 @@ angular.module('proximity.controllers', []).
       $scope.userLocationMarker = {};
       $scope.map = {};
       $scope.gMap = {};
-      $scope.searchRadius = 1600; // meters
+      $scope.searchRadius = 3200; // meters
 
       $scope.setUserLocationMarker = function(lat, lon, recenter) {
         $scope.userLocationMarker = {
@@ -45,7 +45,7 @@ angular.module('proximity.controllers', []).
 
       $scope.map = {
         center: $scope.userLocationMarker.coords,
-        zoom: 13,
+        zoom: 12,
         events: {
           tilesloaded: function(map) {
             $scope.$apply(function() {
@@ -56,7 +56,7 @@ angular.module('proximity.controllers', []).
             ga('send', 'event', 'image', 'click', 'map');
             var e = originalEventArgs[0];
             var lat = e.latLng.lat(), lon = e.latLng.lng();
-            $scope.setUserLocationMarker(lat, lon);
+            $scope.setUserLocationMarker(lat, lon, false);
             $scope.addressInput = ""; 
             $scope.$apply();
             $scope.rankLocation(lat, lon);
@@ -145,7 +145,7 @@ angular.module('proximity.controllers', []).
         var callback = function(results, status) {
           switch(status) {
             case google.maps.places.PlacesServiceStatus.OK:
-              type.score = results.length;
+              type.score = results.length / 10;
               console.log(type.tag + ": " + results.length);
               break;
             case google.maps.places.PlacesServiceStatus.ZERO_RESULTS:
