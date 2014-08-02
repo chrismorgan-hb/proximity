@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('proximity.controllers', []).
-  controller('HomeCtrl', ['$scope', '$http', 'ga',
-    function($scope, $http, ga) {
+  controller('HomeCtrl', ['$scope', '$http', '$q', 'ga',
+    function($scope, $http, $q, ga) {
       ga('send', 'pageview', {title: 'Home'});
       $scope.userLocationMarker = {};
       $scope.map = {};
@@ -65,7 +65,7 @@ angular.module('proximity.controllers', []).
       };
 
       $scope.getLocation = function(val) {
-        // TODO: Switch to google.maps.Geocoder()
+        // We don't use the Geocoder class here because of rate limiting
         return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
           params: {
             address: val,
@@ -82,16 +82,25 @@ angular.module('proximity.controllers', []).
 
       $scope.onSelect = function($item, $model, $label) {
         ga('send', 'event', 'input', 'select', 'address');
-        // TODO: Switch to google.maps.Geocoder()
-        // TODO: Avoid the second API call
-        return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-          params: {
-            address: $label,
-            sensor: false
-          }
-        }).then(function(res) {
-          var lat = res.data.results[0].geometry.location.lat;
-          var lon = res.data.results[0].geometry.location.lng;
+        var geocodeAddress = function(address) {
+          var geocoder = new google.maps.Geocoder();
+          var d = $q.defer();
+          geocoder.geocode( { 'address': address }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              d.resolve(results);
+            } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+              d.resolve([]);
+            } else {
+              alert("Geocode was not successful for the following reason: " 
+                    + status);
+              d.resolve([]);
+            }
+          });
+          return d.promise;
+        };
+        geocodeAddress($label).then(function(results) {
+          var lat = results[0].geometry.location.lat();
+          var lon = results[0].geometry.location.lng();
           $scope.setUserLocationMarker(lat, lon, true);
           $scope.rankLocation(lat, lon);
         });
