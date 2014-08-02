@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('proximity.controllers', []).
-  controller('HomeCtrl', ['$scope', '$http', '$q', 'ga',
-    function($scope, $http, $q, ga) {
+  controller('HomeCtrl', ['$scope', '$http', '$q', 'ga', 'geolocation',
+    function($scope, $http, $q, ga, geolocation) {
       ga('send', 'pageview', {title: 'Home'});
       $scope.userLocationMarker = {};
       $scope.map = {};
@@ -21,7 +21,13 @@ angular.module('proximity.controllers', []).
         }
       };
 
+      // TODO: Pick a better starting point in case the user doesn't allow
+      // geolocation.
       $scope.setUserLocationMarker(33.744433, -118.015762, true);
+      geolocation.getLocation().then(function(data) {
+        $scope.setUserLocationMarker(
+          data.coords.latitude, data.coords.longitude, true);
+      });
 
       $scope.increaseRadius = function() {
         if ($scope.searchRadius < 8000) {
