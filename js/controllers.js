@@ -52,6 +52,8 @@ angular.module('proximity.controllers', []).
       $scope.map = {
         center: $scope.userLocationMarker.coords,
         zoom: 12,
+        typeMarkers: [],
+        doClusterTypeMarkers: true,
         events: {
           tilesloaded: function(map) {
             $scope.$apply(function() {
@@ -63,6 +65,7 @@ angular.module('proximity.controllers', []).
             var e = originalEventArgs[0];
             var lat = e.latLng.lat(), lon = e.latLng.lng();
             $scope.setUserLocationMarker(lat, lon, false);
+            $scope.map.typeMarkers = [];
             $scope.addressInput = ""; 
             $scope.$apply();
             $scope.rankLocation(lat, lon);
@@ -183,5 +186,44 @@ angular.module('proximity.controllers', []).
 
         var placesService = new google.maps.places.PlacesService($scope.gMap);
         placesService.radarSearch(request, callback);
+      };
+
+      $scope.searchNearby = function(tag) {
+        var callback = function(results, status) {
+          switch(status) {
+            case google.maps.places.PlacesServiceStatus.OK:
+              console.log(results);
+              angular.forEach(results, function(item) {
+                $scope.map.typeMarkers.push(
+                    {
+                      idKey: item.id,
+                      latitude: item.geometry.location.lat(),
+                      longitude: item.geometry.location.lng(),
+                      title: item.name
+                    });
+              });
+              // TODO: Make the markers clickable with info windows
+              // TODO: Expand the category listing
+              break;
+            case google.maps.places.PlacesServiceStatus.ZERO_RESULTS:
+              break;
+            default:
+              alert(type.tag + ": " + status);
+              return;
+          }
+          $scope.$apply();
+        };
+        $scope.map.typeMarkers = [];
+        var latLng = new google.maps.LatLng(
+          $scope.userLocationMarker.coords.latitude,
+          $scope.userLocationMarker.coords.longitude);
+        var request = {
+          location: latLng,
+          radius: $scope.searchRadius,
+          rankBy: google.maps.places.RankBy.PROMINENCE,
+          types: [tag]
+        };
+        var placesService = new google.maps.places.PlacesService($scope.gMap);
+        placesService.nearbySearch(request, callback);
       };
   }]);

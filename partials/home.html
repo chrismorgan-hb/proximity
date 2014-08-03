@@ -35,6 +35,13 @@
       clickable="false"
       visible="true">
     </circle>
+    <markers 
+      models="map.typeMarkers" 
+      idKey="'idKey'"
+      coords="'self'" 
+      icon="'icon'" 
+      doCluster="false">
+    </markers>
   </google-map>
   <ul class="list-group">
     <li ng-repeat="type in types" 
@@ -43,7 +50,8 @@
                  'list-group-item list-group-item-warning': 
                     type.score < 3 && type.score >= 2,
                  'list-group-item list-group-item-danger': 
-                    type.score < 2 && type.score >= 0}">
+                    type.score < 2 && type.score >= 0}"
+      ng-click="searchNearby(type.tag)">
       {{type.name}}
       <rating ng-model="type.score" max="5" readonly="true"></rating>
     </li>
