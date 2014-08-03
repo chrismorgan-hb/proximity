@@ -192,15 +192,32 @@ angular.module('proximity.controllers', []).
         var callback = function(results, status) {
           switch(status) {
             case google.maps.places.PlacesServiceStatus.OK:
-              console.log(results);
+              var typeMarkerClicked = function(marker) {
+                // TODO: Seems like this doesn't work after clicking close
+                // because angular doesn't realize the model changed.
+                marker.showWindow = true;
+                console.log(marker);
+                $scope.$apply();
+              };
+              var typeMarkerCloseClicked = function(marker) {
+                marker.showWindow = false;
+                $scope.$apply();
+              };
               angular.forEach(results, function(item) {
-                $scope.map.typeMarkers.push(
-                    {
-                      idKey: item.id,
-                      latitude: item.geometry.location.lat(),
-                      longitude: item.geometry.location.lng(),
-                      title: item.name
-                    });
+                var marker = {
+                    idKey: item.id,
+                    latitude: item.geometry.location.lat(),
+                    longitude: item.geometry.location.lng(),
+                    title: item.name,
+                    showWindow: false,
+                  };
+                marker.onClicked = function() {
+                  typeMarkerClicked(marker);
+                };
+                marker.closeClicked = function() {
+                  typeMarkerCloseClicked(marker);
+                };
+                $scope.map.typeMarkers.push(marker);
               });
               // TODO: Make the markers clickable with info windows
               // TODO: Expand the category listing

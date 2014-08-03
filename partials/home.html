@@ -35,11 +35,20 @@
       clickable="false"
       visible="true">
     </circle>
+    <window 
+      ng-repeat="marker in map.typeMarkers"
+      show="marker.showWindow"
+      closeClick="marker.closeClick"
+      coords="marker">
+      <p>{{marker.title}}</p>
+      <!--TODO: Use more stuff (like the photo, etc.)-->
+    </window>
     <markers 
       models="map.typeMarkers" 
-      idKey="'idKey'"
+      idkey="'idKey'"
       coords="'self'" 
       icon="'icon'" 
+      click="'onClicked'"
       doCluster="false">
     </markers>
   </google-map>
